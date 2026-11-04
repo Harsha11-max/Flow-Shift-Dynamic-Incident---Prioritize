@@ -1,0 +1,11 @@
+{
+  "name": "flowshift-dynamic-incident-prioritizer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A browser-based dynamic incident queue with explainable prioritization and instant resource replanning.",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs"
+  },
+  "keywords": ["software-engineering", "dynamic-problem", "priority-queue", "resource-allocation", "javascript"],
+  "license": "MIT"
+}

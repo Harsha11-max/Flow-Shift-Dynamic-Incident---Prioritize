@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="FlowShift: an interactive dynamic incident-prioritization and resource-allocation system." />
+  <title>FlowShift · Dynamic Decision Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="engine.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Project navigation">
+      <a class="brand" href="#top" aria-label="FlowShift home"><span class="brand-mark">F<span>↗</span></span><span>FlowShift<small>DYNAMIC DECISION LAB</small></span></a>
+      <div class="nav-label">WORKSPACE</div>
+      <a href="#dashboard" class="nav-item active"><span aria-hidden="true">▦</span> Live dashboard</a>
+      <a href="#queue" class="nav-item"><span aria-hidden="true">≋</span> Priority queue</a>
+      <a href="#decision" class="nav-item"><span aria-hidden="true">◇</span> Decision logic</a>
+      <a href="#activity" class="nav-item"><span aria-hidden="true">↺</span> Event history</a>
+      <div class="sidebar-bottom">
+        <div class="side-insight"><span class="status-light"></span> SYSTEM ONLINE<br/><small>Browser-only · no server required</small></div>
+        <p>Built for a Software Engineering dynamic-problem case study.</p>
+      </div>
+    </aside>
+
+    <main id="top" class="main">
+      <header class="topbar"><div class="eyebrow">OPERATIONS / CONTROL CENTER</div><div class="clock-chip"><span class="status-light"></span><span id="simClock">Simulation clock</span></div></header>
+      <section id="dashboard" class="hero">
+        <div class="hero-content"><div class="overline">LIVE REPLANNING ENGINE <span class="hero-pulse">●</span></div><h1>When conditions change,<br><em>the plan changes.</em></h1><p>Priority isn't a fixed list. FlowShift automatically reorders incidents as deadlines approach, new emergencies arrive, or your team capacity changes.</p><div class="hero-tags"><span>01 / SCORE</span><span>02 / RANK</span><span>03 / ALLOCATE</span><span>04 / REPLAN</span></div></div>
+        <div class="hero-visual" aria-hidden="true"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="orbit-label label-a">URGENT</div><div class="orbit-label label-b">CAPACITY</div><div class="orbit-label label-c">REAL TIME</div><div class="central-node">↗<small>REPLAN</small></div></div>
+      </section>
+
+      <section class="stat-grid" aria-label="Current statistics">
+        <div class="stat-card"><div class="stat-caption">OPEN INCIDENTS <span>↗</span></div><div class="stat-number" id="statOpen">—</div><div class="stat-foot">Awaiting resolution</div></div>
+        <div class="stat-card"><div class="stat-caption">IN DISPATCH <span class="dot teal"></span></div><div class="stat-number" id="statAssigned">—</div><div class="stat-foot">Assigned automatically</div></div>
+        <div class="stat-card"><div class="stat-caption">WAITING QUEUE <span class="dot orange"></span></div><div class="stat-number" id="statWaiting">—</div><div class="stat-foot">Pending available team</div></div>
+        <div class="stat-card"><div class="stat-caption">MISSED TARGET <span class="dot red"></span></div><div class="stat-number" id="statOverdue">—</div><div class="stat-foot">Response time exceeded</div></div>
+      </section>
+
+      <section class="panel simulation-panel" aria-labelledby="test-title">
+        <div class="panel-heading"><div><div class="section-kicker">SCENARIO BUILDER</div><h2 id="test-title">Stress-test the system</h2><p>Change the situation and watch the queue recalculate immediately.</p></div><span class="mini-badge">INTERACTIVE DEMO</span></div>
+        <div class="sim-grid">
+          <div class="sim-actions"><button type="button" id="emergencyBtn" class="action-btn highlight"><span>✳</span> Inject emergency <small>Priority spike</small></button><button type="button" id="advanceBtn" class="action-btn"><span>◷</span> +15 minutes <small>Time pressure</small></button><button type="button" id="spikeBtn" class="action-btn"><span>≋</span> Demand surge <small>+4 new incidents</small></button></div>
+          <div class="capacity-card"><div class="capacity-title"><span>AVAILABLE RESPONSE TEAMS</span><span id="capacityValue">2 / 6</span></div><div class="capacity-controls"><button type="button" id="minusCapacity" aria-label="Remove one response team">−</button><div class="capacity-progress"><div id="capacityBar"></div></div><button type="button" id="plusCapacity" aria-label="Add one response team">+</button></div><p>Changing capacity triggers instant reassignment.</p><button type="button" class="reset-link" id="resetBtn">↺ Reset demonstration</button></div>
+        </div>
+        <div id="announcement" class="announcement" role="status" aria-live="polite">Ready — try injecting an emergency to see priorities shift.</div>
+      </section>
+
+      <div class="content-columns">
+        <section id="queue" class="panel queue-panel" aria-labelledby="queue-title"><div class="panel-heading queue-heading"><div><div class="section-kicker">AUTO-UPDATED</div><h2 id="queue-title">Priority queue</h2><p>Sorted by dynamic score. Top incidents get available teams.</p></div><span class="mini-badge outline" id="queueCount">0 open</span></div>
+          <div class="queue-controls"><input id="searchInput" type="search" placeholder="Search incidents..." aria-label="Search incidents" maxlength="80"/><div class="filters" role="group" aria-label="Queue view"><button type="button" class="filter active" data-filter="open" aria-pressed="true">Open</button><button type="button" class="filter" data-filter="resolved" aria-pressed="false">Resolved</button><button type="button" class="filter" data-filter="all" aria-pressed="false">All</button></div></div>
+          <div class="queue-labels" aria-hidden="true"><span>INCIDENT / STATUS</span><span>SCORE</span></div><div id="queueList" class="queue-list"></div><div id="emptyState" class="empty-state" hidden>No incidents match this view.</div>
+        </section>
+
+        <div class="right-column">
+          <section class="panel new-panel" aria-labelledby="new-title"><div class="section-kicker">ADD A LIVE EVENT</div><h2 id="new-title">Report incident</h2><p>Add a case to see how the scheduler reacts.</p>
+            <form id="incidentForm"><label for="titleInput">Incident description</label><input id="titleInput" name="title" placeholder="e.g. Elevator stopped in hospital" required maxlength="80" />
+              <div class="two-fields"><div><label for="categoryInput">Category</label><select id="categoryInput" name="category"><option>Medical</option><option>Infrastructure</option><option>Transport</option><option>Utilities</option><option>Technology</option><option>Other</option></select></div><div><label for="slaInput">Response target</label><select id="slaInput" name="slaMinutes"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60" selected>1 hour</option><option value="120">2 hours</option><option value="240">4 hours</option></select></div></div>
+              <div class="two-fields"><div><label for="urgencyInput">Urgency (1–5)</label><select id="urgencyInput" name="urgency"><option value="1">1 · Low</option><option value="2">2 · Moderate</option><option value="3" selected>3 · Medium</option><option value="4">4 · High</option><option value="5">5 · Critical</option></select></div><div><label for="impactInput">People affected (1–5)</label><select id="impactInput" name="impact"><option value="1">1 · Very few</option><option value="2">2 · Few</option><option value="3" selected>3 · Some</option><option value="4">4 · Many</option><option value="5">5 · Very many</option></select></div></div>
+              <button type="submit" class="primary-btn">+ Add to live queue</button><p id="formError" class="form-error" role="alert" hidden></p>
+            </form>
+          </section>
+
+          <section id="decision" class="panel logic-panel" aria-labelledby="logic-title"><div class="section-kicker">TRANSPARENT ALGORITHM</div><h2 id="logic-title">Why this priority?</h2><p id="selectedTitle">Select an incident to inspect its score.</p><div id="scoreBreakdown" class="score-breakdown"></div><div id="decisionNote" class="decision-note">The score is an explainable rule-based heuristic, not an AI prediction.</div></section>
+        </div>
+      </div>
+
+      <section id="activity" class="panel log-panel" aria-labelledby="log-title"><div class="panel-heading"><div><div class="section-kicker">AUDIT TRAIL</div><h2 id="log-title">Replanning history</h2><p>Actions and decisions taken in this browser session.</p></div><span class="mini-badge outline" id="resolvedCount">0 resolved</span></div><ol id="eventLog" class="event-log"></ol></section>
+      <footer>FLOWSHIFT <span>·</span> Software Engineering case study <span>·</span> Rule-based decision support <span>·</span> Data saved in this browser</footer>
+    </main>
+  </div>
+</body>
+</html>
